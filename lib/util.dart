@@ -19,3 +19,15 @@ Future<bool?> getBoolSharedPreference(String key) async {
 
   return prefs.getBool(key);
 }
+
+void setStringSharedPreference(String key, String value) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  await prefs.setString(key, value);
+}
+
+Future<String> getStringSharedPreference(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return prefs.getString(key) ?? "";
+}

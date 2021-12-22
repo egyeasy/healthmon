@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthmon/selection_view.dart';
 import 'package:healthmon/util.dart';
 
 class WelcomeView extends StatefulWidget {
@@ -25,12 +26,7 @@ class WelcomeViewState extends State<WelcomeView> {
     return Scaffold(
       backgroundColor: const Color(0xFF303030),
       body: Center(
-        child: showWelcomeText
-            ? _welcomeText()
-            : Text(
-                "가나다",
-                style: getTextStyle(25, const Color(0xFFDFDFDF)),
-              ),
+        child: showWelcomeText ? _welcomeText() : SelectionView(),
       ),
     );
   }
