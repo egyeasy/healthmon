@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:healthmon/home.dart';
 import 'package:healthmon/selected_pokemon.dart';
 import 'package:healthmon/strings.dart';
 import 'package:healthmon/util.dart';
@@ -74,9 +73,6 @@ class SelectionViewState extends State<SelectionView> {
     print(getSelectedPokemonFromString(selectedPokemonString).getString());
 
     setBoolSharedPreference(isBeginnerKey, false);
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomeView()),
-    );
+    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
 }
