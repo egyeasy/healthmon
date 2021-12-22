@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:healthmon/home.dart';
 import 'package:healthmon/selected_pokemon.dart';
+import 'package:healthmon/strings.dart';
 import 'package:healthmon/util.dart';
 
 class SelectionView extends StatefulWidget {
@@ -12,7 +14,6 @@ class SelectionViewState extends State<SelectionView> {
   final String pairiFile = "images/pairi.png";
   final String kkobugiFile = "images/kkobugi.png";
   final String yisanghaessiFile = "images/yisanghaessi.png";
-  final String _selectedPokemonKey = "SELECTED_POKEMON";
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +67,16 @@ class SelectionViewState extends State<SelectionView> {
 
   _onSelected(SelectedPokemon selected) async {
     setStringSharedPreference(
-      _selectedPokemonKey,
+      selectedPokemonKey,
       selected.getString(),
     );
-    String selectedPokemonString = await getStringSharedPreference(_selectedPokemonKey);
-
+    String selectedPokemonString = await getStringSharedPreference(selectedPokemonKey);
     print(getSelectedPokemonFromString(selectedPokemonString).getString());
+
+    setBoolSharedPreference(isBeginnerKey, false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeView()),
+    );
   }
 }
