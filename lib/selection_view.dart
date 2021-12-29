@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthmon/naming_view.dart';
 import 'package:healthmon/selected_pokemon.dart';
 import 'package:healthmon/strings.dart';
 import 'package:healthmon/util.dart';
@@ -64,15 +65,15 @@ class SelectionViewState extends State<SelectionView> {
     );
   }
 
-  _onSelected(SelectedPokemon selected) async {
+  _onSelected(SelectedPokemon selected) {
     setStringSharedPreference(
       selectedPokemonKey,
       selected.getString(),
     );
-    String selectedPokemonString = await getStringSharedPreference(selectedPokemonKey);
-    print(getSelectedPokemonFromString(selectedPokemonString).getString());
 
-    setBoolSharedPreference(isBeginnerKey, false);
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NamingView()),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthmon/colors.dart';
 import 'package:healthmon/selection_view.dart';
 import 'package:healthmon/util.dart';
 
@@ -42,7 +43,7 @@ class WelcomeViewState extends State<WelcomeView> {
     return Text(
       welcomeString,
       textAlign: TextAlign.center,
-      style: getTextStyle(25, const Color(0xFFDFDFDF)),
+      style: getTextStyle(25, whiteColor),
     );
   }
 }

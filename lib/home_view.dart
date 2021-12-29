@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthmon/colors.dart';
 import 'package:healthmon/selected_pokemon.dart';
 import 'package:healthmon/strings.dart';
 import 'package:healthmon/util.dart';
@@ -15,15 +16,15 @@ class HomeViewState extends State<HomeView> {
 
   bool isBeginner = true;
   String pokemonFile = "";
+  String pokemonName = "";
   int stepCount = 2000;
   int hourCount = 47;
 
   Future<bool> _initState() async {
     isBeginner = (await getBoolSharedPreference(isBeginnerKey)) ?? true;
     String selectedPokemonString = await getStringSharedPreference(selectedPokemonKey);
-    print("ISBEGINNER: " + isBeginner.toString());
-    print("SELECTED: " + selectedPokemonString);
     pokemonFile = "images/" + getSelectedPokemonFromString(selectedPokemonString).getString() + ".png";
+    pokemonName = await getStringSharedPreference(pokemonNameKey);
 
     return true;
   }
@@ -40,7 +41,7 @@ class HomeViewState extends State<HomeView> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Error: ${snapshot.error}',
-              style: getTextStyle(25, const Color(0xFFDFDFDF)),
+              style: getTextStyle(25, whiteColor),
             ),
           );
         } else {
@@ -65,7 +66,12 @@ class HomeViewState extends State<HomeView> {
           width: 300,
           image: AssetImage(pokemonFile),
         ),
-        const SizedBox(height: 50),
+        const SizedBox(height: 30),
+        Text(
+          pokemonName,
+          style: getTextStyle(25, whiteColor),
+        ),
+        const SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -76,26 +82,11 @@ class HomeViewState extends State<HomeView> {
             const SizedBox(width: 10),
             Text(
               stepCount.toString(),
-              style: getTextStyle(25, const Color(0xFFDFDFDF)),
+              style: getTextStyle(25, whiteColor),
             ),
             const SizedBox(width: 20),
           ],
         ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(
-              width: 50,
-              image: AssetImage(clockFile),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              hourCount.toString() + "시간",
-              style: getTextStyle(25, const Color(0xFFDFDFDF)),
-            )
-          ],
-        )
       ],
     );
   }
