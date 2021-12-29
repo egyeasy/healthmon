@@ -21,6 +21,8 @@ extension StringExtension on SelectedPokemon {
         break;
       case SelectedPokemon.yisanghaessi:
         pokemonString = "yisanghaessi";
+        break;
+      default:
     }
     return pokemonString;
   }

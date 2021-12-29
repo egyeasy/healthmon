@@ -31,3 +31,15 @@ Future<String> getStringSharedPreference(String key) async {
 
   return prefs.getString(key) ?? "";
 }
+
+void setIntSharedPreference(String key, int value) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  await prefs.setInt(key, value);
+}
+
+Future<int> getIntSharedPreference(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return prefs.getInt(key) ?? 0;
+}
