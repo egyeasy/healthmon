@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthmon/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 TextStyle getTextStyle(double fontSize, Color color) {
@@ -42,4 +43,17 @@ Future<int> getIntSharedPreference(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   return prefs.getInt(key) ?? 0;
+}
+
+void setDateTimeSharedPreference(String key, DateTime value) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  print(value.toString());
+
+  await prefs.setString(key, value.toString());
+}
+
+Future<DateTime> getDateTimeSharedPreference(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return DateTime.parse(prefs.getString(key) ?? nullDateTimeString);
 }

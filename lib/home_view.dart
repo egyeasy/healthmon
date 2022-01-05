@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:healthmon/colors.dart';
+import 'package:healthmon/date_time_util.dart';
 import 'package:healthmon/selected_pokemon.dart';
 import 'package:healthmon/strings.dart';
 import 'package:healthmon/util.dart';
 import 'package:healthmon/welcome_view.dart';
 import 'package:pedometer/pedometer.dart';
+import 'package:system_clock/system_clock.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -18,8 +20,9 @@ class HomeViewState extends State<HomeView> {
   bool isBeginner = true;
   String pokemonFile = "";
   String pokemonName = "";
-  int stepCount = 0;
-  int todayStepCount = 0;
+  int totalStepCount = 0;
+  int afterBootStepCount = 0;
+  DateTime afterBootStepCountUpdateTime = DateTime.now();
 
   late Stream<StepCount> _stepCountStream;
   late Stream<PedestrianStatus> _pedestrianStatusStream;
@@ -27,10 +30,17 @@ class HomeViewState extends State<HomeView> {
 
   Future<bool> _initState() async {
     isBeginner = (await getBoolSharedPreference(isBeginnerKey)) ?? true;
-    String selectedPokemonString = await getStringSharedPreference(selectedPokemonKey);
-    pokemonFile = "images/" + getSelectedPokemonFromString(selectedPokemonString).getString() + ".png";
+    String selectedPokemonString =
+        await getStringSharedPreference(selectedPokemonKey);
+    pokemonFile = "images/" +
+        getSelectedPokemonFromString(selectedPokemonString).getString() +
+        ".png";
     pokemonName = await getStringSharedPreference(pokemonNameKey);
-    stepCount = await getIntSharedPreference(stepCountKey);
+
+    totalStepCount = await getIntSharedPreference(totalStepCountKey);
+    afterBootStepCount = await getIntSharedPreference(afterBootStepCountKey);
+    afterBootStepCountUpdateTime =
+        await getDateTimeSharedPreference(afterBootStepCountUpdateTimeKey);
 
     initStepCountPlatformState();
 
@@ -95,7 +105,7 @@ class HomeViewState extends State<HomeView> {
         ),
         const SizedBox(width: 10),
         Text(
-          stepCount.toString(),
+          totalStepCount.toString(),
           style: getTextStyle(25, whiteColor),
         ),
       ],
@@ -103,20 +113,31 @@ class HomeViewState extends State<HomeView> {
   }
 
   void onStepCount(StepCount event) {
-    print(event);
     setState(() {
       int currentStepCount = event.steps;
-      int stepCountDiff = currentStepCount > todayStepCount ? currentStepCount - todayStepCount : currentStepCount;
-      todayStepCount = currentStepCount;
-      stepCount += stepCountDiff;
-      setIntSharedPreference(stepCountKey, stepCount);
+      DateTime now = DateTime.now();
 
-      print("STEP: " + event.steps.toString());
+      DateTime bootDateTime = now.subtract(SystemClock.elapsedRealtime());
+      if (afterBootStepCountUpdateTime == nullDateTime) {
+        totalStepCount = 0;
+      } else {
+        if (afterBootStepCountUpdateTime.isAfter(bootDateTime)) {
+          totalStepCount += currentStepCount - afterBootStepCount;
+        } else {
+          totalStepCount += currentStepCount;
+        }
+      }
+      afterBootStepCount = currentStepCount;
+      afterBootStepCountUpdateTime = now;
+
+      setIntSharedPreference(afterBootStepCountKey, afterBootStepCount);
+      setIntSharedPreference(totalStepCountKey, totalStepCount);
+      setDateTimeSharedPreference(
+          afterBootStepCountUpdateTimeKey, afterBootStepCountUpdateTime);
     });
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event) {
-    print(event);
     setState(() {
       _stepStatus = event.status;
     });
@@ -132,14 +153,14 @@ class HomeViewState extends State<HomeView> {
 
   void onStepCountError(error) {
     print('onStepCountError: $error');
-    setState(() {
-      // _step = 'Step Count not available';
-    });
+    setState(() {});
   }
 
   void initStepCountPlatformState() {
     _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-    _pedestrianStatusStream.listen(onPedestrianStatusChanged).onError(onPedestrianStatusError);
+    _pedestrianStatusStream
+        .listen(onPedestrianStatusChanged)
+        .onError(onPedestrianStatusError);
 
     _stepCountStream = Pedometer.stepCountStream;
     _stepCountStream.listen(onStepCount).onError(onStepCountError);
