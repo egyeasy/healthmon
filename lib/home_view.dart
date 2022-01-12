@@ -148,7 +148,6 @@ class HomeViewState extends State<HomeView> {
     setState(() {
       _stepStatus = 'Pedestrian Status not available';
     });
-    print(_stepStatus);
   }
 
   void onStepCountError(error) {

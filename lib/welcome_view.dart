@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:healthmon/colors.dart';
 import 'package:healthmon/selection_view.dart';
+import 'package:healthmon/strings.dart';
 import 'package:healthmon/util.dart';
 
 class WelcomeView extends StatefulWidget {
@@ -19,7 +22,18 @@ class WelcomeViewState extends State<WelcomeView> {
   }
 
   void _initState() async {
+    _initSharedPreferences();
     await timer();
+  }
+
+  void _initSharedPreferences() {
+    setIntSharedPreference(firstEvolutionStepCountKey, _createRandomNumberFromRange(15000, 25000));
+    setIntSharedPreference(secondEvolutionStepCountKey, _createRandomNumberFromRange(45000, 55000));
+  }
+
+  int _createRandomNumberFromRange(int min, int max) {
+    final _random = Random();
+    return min + _random.nextInt(max - min);
   }
 
   @override
