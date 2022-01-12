@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:healthmon/base_pokemon.dart';
 import 'package:healthmon/colors.dart';
 import 'package:healthmon/date_time_util.dart';
-import 'package:healthmon/selected_pokemon.dart';
 import 'package:healthmon/strings.dart';
 import 'package:healthmon/util.dart';
 import 'package:healthmon/welcome_view.dart';
@@ -30,17 +30,16 @@ class HomeViewState extends State<HomeView> {
 
   Future<bool> _initState() async {
     isBeginner = (await getBoolSharedPreference(isBeginnerKey)) ?? true;
-    String selectedPokemonString =
-        await getStringSharedPreference(selectedPokemonKey);
-    pokemonFile = "images/" +
-        getSelectedPokemonFromString(selectedPokemonString).getString() +
-        ".png";
+    String basePokemonString = await getStringSharedPreference(basePokemonKey);
+    BasePokemon basePokemon = getBasePokemonFromString(basePokemonString);
+    String currentPokemonString = await basePokemon.getCurrentPokemonString();
+
+    pokemonFile = "images/" + currentPokemonString + ".png";
     pokemonName = await getStringSharedPreference(pokemonNameKey);
 
     totalStepCount = await getIntSharedPreference(totalStepCountKey);
     afterBootStepCount = await getIntSharedPreference(afterBootStepCountKey);
-    afterBootStepCountUpdateTime =
-        await getDateTimeSharedPreference(afterBootStepCountUpdateTimeKey);
+    afterBootStepCountUpdateTime = await getDateTimeSharedPreference(afterBootStepCountUpdateTimeKey);
 
     initStepCountPlatformState();
 
@@ -132,8 +131,7 @@ class HomeViewState extends State<HomeView> {
 
       setIntSharedPreference(afterBootStepCountKey, afterBootStepCount);
       setIntSharedPreference(totalStepCountKey, totalStepCount);
-      setDateTimeSharedPreference(
-          afterBootStepCountUpdateTimeKey, afterBootStepCountUpdateTime);
+      setDateTimeSharedPreference(afterBootStepCountUpdateTimeKey, afterBootStepCountUpdateTime);
     });
   }
 
@@ -157,9 +155,7 @@ class HomeViewState extends State<HomeView> {
 
   void initStepCountPlatformState() {
     _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-    _pedestrianStatusStream
-        .listen(onPedestrianStatusChanged)
-        .onError(onPedestrianStatusError);
+    _pedestrianStatusStream.listen(onPedestrianStatusChanged).onError(onPedestrianStatusError);
 
     _stepCountStream = Pedometer.stepCountStream;
     _stepCountStream.listen(onStepCount).onError(onStepCountError);

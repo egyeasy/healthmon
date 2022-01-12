@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:healthmon/base_pokemon.dart';
 import 'package:healthmon/naming_view.dart';
-import 'package:healthmon/selected_pokemon.dart';
 import 'package:healthmon/strings.dart';
 import 'package:healthmon/util.dart';
 
@@ -31,14 +31,14 @@ class SelectionViewState extends State<SelectionView> {
                   icon: Image.asset(pikachuFile),
                   iconSize: 250,
                   onPressed: () {
-                    _onSelected(SelectedPokemon.pikachu);
+                    _onSelected(BasePokemon.pikachu);
                   },
                 ),
                 IconButton(
                   icon: Image.asset(pairiFile),
                   iconSize: 250,
                   onPressed: () {
-                    _onSelected(SelectedPokemon.pairi);
+                    _onSelected(BasePokemon.pairi);
                   },
                 ),
                 const SizedBox(width: 20),
@@ -46,7 +46,7 @@ class SelectionViewState extends State<SelectionView> {
                   icon: Image.asset(kkobugiFile),
                   iconSize: 250,
                   onPressed: () {
-                    _onSelected(SelectedPokemon.kkobugi);
+                    _onSelected(BasePokemon.kkobugi);
                   },
                 ),
                 const SizedBox(width: 20),
@@ -54,7 +54,7 @@ class SelectionViewState extends State<SelectionView> {
                   icon: Image.asset(yisanghaessiFile),
                   iconSize: 250,
                   onPressed: () {
-                    _onSelected(SelectedPokemon.yisanghaessi);
+                    _onSelected(BasePokemon.yisanghaessi);
                   },
                 ),
               ],
@@ -65,10 +65,10 @@ class SelectionViewState extends State<SelectionView> {
     );
   }
 
-  _onSelected(SelectedPokemon selected) {
+  _onSelected(BasePokemon selected) {
     setStringSharedPreference(
-      selectedPokemonKey,
-      selected.getString(),
+      basePokemonKey,
+      selected.getBasePokemonString(),
     );
 
     Navigator.push(
